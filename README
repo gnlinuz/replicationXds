@@ -1,0 +1,22 @@
+This script will install on a sinle server multiple DS 7.x instances and 
+initialise replication.
+
+Script checks for Java version and utilities like unzip and netstat,
+check the installation ports (not conflict with the OS).
+Inserts hostnames into hosts and creates a hosts.backup file under /etc.
+Creates 2 files DEPLOYMENT_KEY and INSTALLATION text under /opt/ds7xRepl0/opendj/
+
+Tested on CenOS 7.x Java version 11 and Ubuntu 20.04 Java version 14.
+Default installation directory /opt/ds7xRepl0/opendj/
+
+Installation requirements
+Before execuete the script make sure you have installed Java version 11 or higher
+include the DS-7.x.x.zip in the same directory where you execute the script,
+make sure that unzip and netstat utilities exist if not,
+(Install unzip sudo yum/apt install unzip net-tools -y).
+
+Optional:
+Change the settings to meet your installation requirments 
+edit the script and change installation settings at the top section # Settings
+  
+enjoy!  

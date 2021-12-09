@@ -1,0 +1,41 @@
+Copy the script with the DS.7.x.zip file in the same dir
+chmod the script like: chmod 755 repDS.sh to make it executable.
+
+
+Edit the script and at the top section #settings change settings
+to meet your installation requirements if needed.
+
+
+Execute the script with argument a number of DS to deploy like:
+repDS.sh 4
+This will create 4 DS servers and at the end will execute
+the dsrepl init. There is a soft limit for min and max servers to
+deploy min=2 max=8 (can be changed)
+
+
+The Installation will check if appropriate Java is installed,
+create directories and check if already exist, create all ports,
+and check the OS for port conflicts. On the first deployed DS
+installation directory two txt files will be created one
+with the DEPLOYMENT_KEY and one with all installation
+commands used.
+
+Default:
+--deploymentKeyPassword Password1
+--rootUserDN uid=admin
+--rootUserPassword Password1
+--monitorUserPassword Password1
+--profile ds-evaluation
+--set ds-evaluation/generatedUsers:100 
+
+Server id will be in the format MASTER0, MASTER1 MASTER2...
+Destination path will be in the format /opt/ds7xRepl0, /opt/ds7xRepl1, /opt/ds7xRepl2, /opt/ds7xRepl3, /opt/ds7xReplx ...
+
+Default ports to be used:
+ldap: 1389 for each additional server +1 ie. second server 1390 third 1391 etc
+ldaps: 1636 for each additional server +1 (1637,1638...)
+admin: 4444 for each additional server +1 (4445, 4446..)
+replication: 8989 for each additional server +1 (8990, 8991..)
+
+
+enjoy!
