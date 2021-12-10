@@ -336,35 +336,35 @@ installationText()
 #printf "Installation instructions..\n\n\n$setupCommand\n\n\n$setupCommand2\n\n\n$initReplication\n\n\nDEPLOYMENT_KEY:$deploymentKey\nPassword: $installationPassword\n" > $setupPath/INSTALLATION
 #
 #ldap ldaps admin replication replication port
-ld=$1
-lds=$2
-adm=$3
-rep=$4
-repb=$4
+ldd=$1
+ldss=$2
+admm=$3
+repp=$4
+repbb=$4
 
 printf "Installation instructions..\n\n\n" > $setupPath/INSTALLATION
 
 for (( b=0; b<$noOfServers; b++ ))
 do
-        bootStrapServers=$bootStrapServers" "--bootstrapReplicationServer" "$hostName${b}$domain:$repb
-        ((repb++))
+        bootStrapSrv="$bootStrapSrv--bootstrapReplicationServer $hostName${b}$domain:$repbb\n"
+        ((repbb++))
 done
 
 for (( i=0; i<$noOfServers; i++ ))
 do
-setupCommand="$destPath${i}/opendj/./setup --ldapPort $ld --adminConnectorPort $adm --rootUserDN "uid=admin" --rootUserPassword $installationPassword --monitorUserPassword $installationPassword --deploymentKeyPassword $installationPassword --deploymentKey $deploymentKey --enableStartTLS --ldapsPort $lds --hostName $hostName${i}$domain --serverId $serverId${i} --replicationPort $rep $bootStrapServers --profile $installationProfile --set ds-evaluation/generatedUsers:$generateUsers --acceptLicense"
+setupCommand="$destPath${i}/opendj/./setup \ \n--ldapPort $ldd \ \n--adminConnectorPort $admm \ \n--rootUserDN "uid=admin" \ \n--rootUserPassword $installationPassword \ \n--monitorUserPassword $installationPassword \ \n--deploymentKeyPassword $installationPassword \ \n--deploymentKey $deploymentKey \ \n--enableStartTLS \ \n--ldapsPort $ldss \ \n--hostName $hostName${i}$domain \ \n--serverId $serverId${i} \ \n--replicationPort $repp \ \n$bootStrapSrv--profile $installationProfile \ \n--set ds-evaluation/generatedUsers:$generateUsers \ \n--acceptLicense"
 
 printf "$setupCommand\n\n\n" >> $setupPath/INSTALLATION
 
-((ld++))
-((adm++))
-((lds++))
-((rep++))
+((ldd++))
+((admm++))
+((ldss++))
+((repp++))
 
 done
 
 s=0
-initReplication="$binPath./dsrepl initialize --baseDN dc=example,dc=com --toAllServers --hostname $hostName${s}$domain --port $adminPort --bindDN "uid=admin" --bindPassword $installationPassword --trustStorePath $setupPath/config/keystore --trustStorePasswordFile $setupPath/config/keystore.pin --no-prompt"
+initReplication="$binPath./dsrepl initialize \\n--baseDN dc=example,dc=com \\n--toAllServers \\n--hostname $hostName${s}$domain \\n--port $adminPort \\n--bindDN "uid=admin" \\n--bindPassword $installationPassword \\n--trustStorePath $setupPath/config/keystore \\n--trustStorePasswordFile $setupPath/config/keystore.pin \\n--no-prompt"
 printf "$initReplication\n\n\nDEPLOYMENT_KEY:$deploymentKey\nPassword: $installationPassword\n" >> $setupPath/INSTALLATION
 }
 
@@ -438,6 +438,23 @@ printf "Replication initialisation started..\n\n"
 #
 sleep 20
 $binPath./dsrepl status --showGroups --showReplicas --hostname $hostName${s}$domain --port $adminPort --bindDN "uid=monitor" --bindPassword $installationPassword --trustStorePath $setupPath/config/keystore --trustStorePassword:file $setupPath/config/keystore.pin --no-prompt
+
+#Create start stop command for all servers
+#
+printf "\n\nCreating srvDS.sh command to start and stop all your servers,\n" 
+printf "Command created on the default path, execute ./srvDS.sh stop or ./srvDS start\n\n"
+
+numSrv=$noOfServers
+printf "#!/bin/bash\n\nSrv=$numSrv\n\ndPath=$destPath\n" > $setupPath/srvDS.sh
+
+command='p=$1\nif [ "$p" = "start" ];then\n\tfor (( j=0; j<$Srv; j++ ))\n\tdo\n\t\t$dPath${j}/opendj/bin/./start-ds\n\tdone\nelse\n\tfor (( j=0; j<$Srv; j++ ))\n\tdo\n\t\t$dPath${j}/opendj/bin/./stop-ds\n\tdone\nfi\n'
+
+printf "$command" >> $setupPath/srvDS.sh
+chmod 755 $setupPath/srvDS.sh
+
+
+
+
 
 printf "installation successful..Done\n"
 printf "Sagionara...\n"
