@@ -18,7 +18,10 @@ create directories and check if already exist, create all ports,
 and check the OS for port conflicts. On the first deployed DS
 installation directory two txt files will be created one
 with the DEPLOYMENT_KEY and one with all installation
-commands used.
+commands used. One more script will be created on this default 
+directory srvDS.sh, chmod it to 755, this will be used to stop
+start all servers just execute sudo ./srvDS.sh stop 
+or sudo ./srvDS.sh start.
 
 Default:
 --deploymentKeyPassword Password1
